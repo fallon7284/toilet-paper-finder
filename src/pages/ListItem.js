@@ -18,10 +18,14 @@ export default ({ location, store }) => {
     distance,
     yelpId
   } = store;
+  const tpStrings = [
+    "no data reported yet.",
+    "no toilet paper in stock.",
+    "only a little amount toilet paper in stock.",
+    "a fair amount of toilet paper in stock.",
+    "a lot of toilet paper in stock."
+  ];
   const { latitude, longitude } = coordinates;
-  const d = new Date();
-  let update = d.getMilliseconds(updatedAt);
-  console.log(location);
   return (
     <div className="list-item">
       <div className="info">
@@ -37,13 +41,7 @@ export default ({ location, store }) => {
           {name}
         </div>
         <div>
-          <div>{`This store ${
-            hasTPInStock !== null
-              ? `${
-                  hasTPInStock ? "has" : "does not have"
-                }  toilet paper in stock`
-              : "has no data reported"
-          }`}</div>
+          <div>{`This store has ${tpStrings[hasTPInStock]}`}</div>
           <div>{`${
             distance <= 1 ? "Less than a mile" : `${distance} mile`
           } away`}</div>

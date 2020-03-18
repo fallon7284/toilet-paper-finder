@@ -14,7 +14,6 @@ export default ({ location, stores, sortBy, filter }) => {
           return b[sortBy] - a[sortBy];
         })
         .map((store, idx) => {
-          console.log(store);
           return <ListItem key={idx} location={location} store={store} />;
         })}
     </div>
