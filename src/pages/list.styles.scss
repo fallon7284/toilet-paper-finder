@@ -1,0 +1,10 @@
+.list {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  &.list-item {
+    color: blue;
+  }
+}
