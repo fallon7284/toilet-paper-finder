@@ -1,7 +1,6 @@
 const axios = require("axios");
 
 const getDistance = (currLat, currLong, destLat, destLong) => {
-  console.log({ currLat, currLong, destLat, destLong });
   function toRad(x) {
     return (x * Math.PI) / 180;
   }

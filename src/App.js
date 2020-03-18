@@ -14,6 +14,7 @@ function App() {
   const [filter, setFilter] = useState(false);
 
   const fetchLocation = async () => {
+    console.log("calling location API");
     const { data } = await axios.post(
       `https://www.googleapis.com/geolocation/v1/geolocate?key=${googleKey}`
     );
