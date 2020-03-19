@@ -3,15 +3,21 @@ import { BrowserRouter, Route } from "react-router-dom";
 import axios from "axios";
 import List from "./pages/List";
 import AddStore from "./pages/AddStore";
-import BottomBar from "./pages/BottomBar";
+import TopBar from "./pages/TopBar";
 import { googleKey } from "./secrets";
 import { getDistance } from "./functions";
+import { makeStyles } from "@material-ui/core/styles";
 import "./App.css";
 
+const useStyles = makeStyles(theme => ({
+  offset: theme.mixins.toolbar
+}));
+
 function App() {
+  const classes = useStyles();
   const [location, setLocation] = useState({ lat: "", lng: "" });
   const [stores, setStores] = useState([]);
-  const [sortBy, setSortBy] = useState("distance");
+  const [sortBy, setSortBy] = useState(true);
   const [filter, setFilter] = useState(false);
   const toggleFilter = () => setFilter(!filter);
 
@@ -29,8 +35,10 @@ function App() {
     const { data } = await axios.post(
       `http://localhost:5000/update?yelpId=${yelpId}&tpAmount=${amount}`
     );
+    console.log(data);
     const storeToUpdate = stores.find(store => store.yelpId === yelpId);
-    storeToUpdate.hasTPInStock = amount;
+    storeToUpdate.hasTPInStock = data.hasTPInStock;
+    storeToUpdate.updatedAt = data.updatedAt;
     setStores([...stores]);
   };
 
@@ -54,8 +62,16 @@ function App() {
     }
   };
 
-  const handleChange = e => {
-    setSortBy(e.target.value);
+  const sortCallback = (a, b) => {
+    if (sortBy) {
+      return Number(a.distance) - Number(b.distance);
+    } else {
+      return b[sortBy] - a[sortBy];
+    }
+  };
+
+  const toggleSort = () => {
+    setSortBy(!sortBy);
   };
   useEffect(() => {
     //on component mount check local storage for recent location data
@@ -79,16 +95,16 @@ function App() {
   useEffect(() => {
     fetchStores();
   }, [location]);
+
   return (
     <>
-      <label>
-        SORT BY
-        <select value={sortBy} onChange={handleChange}>
-          <option value="distance">Distance</option>
-          <option value="hasTPInStock">Amount</option>
-        </select>
-      </label>
-      <button onClick={toggleFilter}>Filter</button>
+      <TopBar
+        toggleFilter={toggleFilter}
+        toggleSort={toggleSort}
+        sortBy={sortBy}
+        filter={filter}
+      />
+      <div className={classes.offset} />
       <BrowserRouter>
         <Route
           path="/"
@@ -96,7 +112,13 @@ function App() {
             return (
               <List
                 location={location}
-                stores={stores}
+                stores={stores.sort((a, b) => {
+                  if (sortBy) {
+                    return Number(a.distance) - Number(b.distance);
+                  } else {
+                    return Number(b.hasTPInStock) - Number(a.hasTPInStock);
+                  }
+                })}
                 filter={filter}
                 sortBy={sortBy}
                 postUpdate={postUpdate}
@@ -106,7 +128,6 @@ function App() {
         />
         <Route exact path="/addstore" component={AddStore} />
       </BrowserRouter>
-      <BottomBar />
     </>
   );
 }

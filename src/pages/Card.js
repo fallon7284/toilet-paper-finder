@@ -1,27 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Collapse from "@material-ui/core/Collapse";
 import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { red, green } from "@material-ui/core/colors";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Car from "@material-ui/icons/DirectionsCar";
 import Button from "./Button";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import * as timeago from "timeago.js";
 import placeHolderImage from "./images/toilet.jpg";
 import tpImage from "./images/tp.jpg";
-import { InputLabel, FormControl, Select, MenuItem } from "@material-ui/core";
-import { directionsQuery, postUpdate } from "../functions";
+import InputLabel from "@material-ui/core/InputLabel";
+import { directionsQuery } from "../functions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -65,10 +61,14 @@ export default function StoreCard({
   directionsData,
   updatedAt,
   toggleUpdateOpen,
-  updateOpen
+  updateOpen,
+  postUpdate
 }) {
+  const [checkedValue, setCheckedValue] = useState(hasTPInStock);
+  useEffect(() => {
+    setCheckedValue(Number(hasTPInStock));
+  }, [hasTPInStock]);
   const classes = useStyles();
-
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -92,7 +92,7 @@ export default function StoreCard({
             ? tpImage
             : placeHolderImage
         }
-        title="Paella dish"
+        title="Store photo"
       />
       <CardContent style={{ height: "80px" }}>
         <Typography variant="body1" color="textPrimary" component="p">
@@ -112,13 +112,6 @@ export default function StoreCard({
           bottom: "15px"
         }}
       >
-        {/* <IconButton
-          aria-label="map-navigate"
-          onClick={() => {
-            console.log(...directionsData);
-            window.open(directionsQuery(...directionsData));
-          }}
-        > */}
         <Button
           title="Navigate"
           action={() => {
@@ -126,24 +119,44 @@ export default function StoreCard({
             window.open(directionsQuery(...directionsData));
           }}
         />
-        {/* </IconButton> */}
-        {/* <IconButton> */}
         <Button title="Update Stock" action={toggleUpdateOpen} />
-        {/* </IconButton> */}
       </div>
       {updateOpen && (
         <InputLabel id="update">
-          UPDATE TOILET PAPER STOCK
-          <Select
-            labelId="update"
-            value={hasTPInStock}
-            onChange={e => postUpdate(yelpId, e.target.value)}
-          >
-            <MenuItem value={1}>None</MenuItem>
-            <MenuItem value={2}>A little</MenuItem>
-            <MenuItem value={3}>A fair amount</MenuItem>
-            <MenuItem value={4}>A lot</MenuItem>
-          </Select>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Update Store TP Stock</FormLabel>
+            <RadioGroup
+              aria-label="Update Store TP Stock"
+              name="gender1"
+              value={checkedValue}
+              onChange={e => {
+                postUpdate(yelpId, e.target.value);
+                toggleUpdateOpen();
+                setCheckedValue(e.target.value);
+              }}
+            >
+              <FormControlLabel
+                value={1}
+                control={<Radio />}
+                label="They have no TP"
+              />
+              <FormControlLabel
+                value={2}
+                control={<Radio />}
+                label="They have a small amount of TP"
+              />
+              <FormControlLabel
+                value={3}
+                control={<Radio />}
+                label="They have a fair amount of TP"
+              />
+              <FormControlLabel
+                value={4}
+                control={<Radio />}
+                label="They have lot of TP"
+              />
+            </RadioGroup>
+          </FormControl>
         </InputLabel>
       )}
     </Card>
