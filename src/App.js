@@ -4,10 +4,11 @@ import axios from "axios";
 import List from "./pages/List";
 import AddStore from "./pages/AddStore";
 import TopBar from "./pages/TopBar";
-import { googleKey } from "./secrets";
+// import { googleKey } from "./secrets";
 import { getDistance } from "./functions";
 import { makeStyles } from "@material-ui/core/styles";
 import "./App.css";
+const key = process.env.GOOGLE_KEY;
 
 const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar
@@ -23,7 +24,7 @@ function App() {
 
   const fetchLocation = async () => {
     const { data } = await axios.post(
-      `https://www.googleapis.com/geolocation/v1/geolocate?key=${googleKey}`
+      `https://www.googleapis.com/geolocation/v1/geolocate?key=${key}`
     );
     localStorage.setItem("lat", data.location.lat);
     localStorage.setItem("lng", data.location.lng);
