@@ -3,6 +3,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import axios from "axios";
 import List from "./pages/List";
 import AddStore from "./pages/AddStore";
+import BottomBar from "./pages/BottomBar";
 import { googleKey } from "./secrets";
 import { getDistance } from "./functions";
 import "./App.css";
@@ -12,9 +13,9 @@ function App() {
   const [stores, setStores] = useState([]);
   const [sortBy, setSortBy] = useState("distance");
   const [filter, setFilter] = useState(false);
+  const toggleFilter = () => setFilter(!filter);
 
   const fetchLocation = async () => {
-    console.log("calling location API");
     const { data } = await axios.post(
       `https://www.googleapis.com/geolocation/v1/geolocate?key=${googleKey}`
     );
@@ -22,6 +23,15 @@ function App() {
     localStorage.setItem("lng", data.location.lng);
     localStorage.setItem("updated", Date.now());
     setLocation(data.location);
+  };
+
+  const postUpdate = async (yelpId, amount) => {
+    const { data } = await axios.post(
+      `http://localhost:5000/update?yelpId=${yelpId}&tpAmount=${amount}`
+    );
+    const storeToUpdate = stores.find(store => store.yelpId === yelpId);
+    storeToUpdate.hasTPInStock = amount;
+    setStores([...stores]);
   };
 
   const fetchStores = async () => {
@@ -75,9 +85,10 @@ function App() {
         SORT BY
         <select value={sortBy} onChange={handleChange}>
           <option value="distance">Distance</option>
-          <option value="amount">Amount</option>
+          <option value="hasTPInStock">Amount</option>
         </select>
       </label>
+      <button onClick={toggleFilter}>Filter</button>
       <BrowserRouter>
         <Route
           path="/"
@@ -88,12 +99,14 @@ function App() {
                 stores={stores}
                 filter={filter}
                 sortBy={sortBy}
+                postUpdate={postUpdate}
               />
             );
           }}
         />
         <Route exact path="/addstore" component={AddStore} />
       </BrowserRouter>
+      <BottomBar />
     </>
   );
 }

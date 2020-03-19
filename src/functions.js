@@ -22,8 +22,4 @@ const directionsQuery = (location, latitude, longitude) => {
   return `https://www.google.com/maps/dir/?api=1&origin=${location.lat},${location.lng}&destination=${latitude},${longitude}`;
 };
 
-const postUpdate = (yelpId, amount) => {
-  axios.post(`http://localhost:5000/update/${yelpId}&${amount}`);
-};
-
-module.exports = { getDistance, directionsQuery, postUpdate };
+module.exports = { getDistance, directionsQuery };
