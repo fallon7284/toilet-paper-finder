@@ -8,8 +8,8 @@ import TopBar from "./pages/TopBar";
 import { getDistance } from "./functions";
 import { makeStyles } from "@material-ui/core/styles";
 import "./App.css";
-// const key = process.env.GOOGLE_KEY;
-console.log("THIS IS THE GOOGLE KEY##################", process.env.GOOGLE_KEY);
+const key = process.env.REACT_APP_GOOGLE_KEY;
+console.log("THIS IS THE GOOGLE KEY##################", key);
 
 const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar
@@ -25,7 +25,7 @@ function App() {
 
   const fetchLocation = async () => {
     const { data } = await axios.post(
-      `https://www.googleapis.com/geolocation/v1/geolocate?key=${process.env.GOOGLE_KEY}`
+      `https://www.googleapis.com/geolocation/v1/geolocate?key=${key}`
     );
     localStorage.setItem("lat", data.location.lat);
     localStorage.setItem("lng", data.location.lng);
