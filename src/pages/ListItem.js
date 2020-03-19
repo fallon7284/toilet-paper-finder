@@ -38,7 +38,8 @@ export default ({ location, store, postUpdate }) => {
             content,
             directionsData,
             toggleUpdateOpen,
-            updateOpen
+            updateOpen,
+            postUpdate
           }}
         />
       </div>
