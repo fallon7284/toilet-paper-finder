@@ -9,6 +9,7 @@ import { getDistance } from "./functions";
 import { makeStyles } from "@material-ui/core/styles";
 import "./App.css";
 const key = process.env.GOOGLE_KEY;
+console.log("THIS IS THE GOOGLE KEY##################", key);
 
 const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar
@@ -88,7 +89,7 @@ function App() {
   useEffect(() => {
     fetchStores();
   }, [location]);
-
+  console.log("THIS IS THE LOCATION######################", location);
   return (
     <>
       <TopBar
