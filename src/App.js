@@ -4,10 +4,11 @@ import axios from "axios";
 import List from "./pages/List";
 import AddStore from "./pages/AddStore";
 import TopBar from "./pages/TopBar";
-import { googleKey } from "./secrets";
+// import { googleKey } from "./secrets";
 import { getDistance } from "./functions";
 import { makeStyles } from "@material-ui/core/styles";
 import "./App.css";
+const key = process.env.GOOGLE_KEY;
 
 const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar
@@ -23,7 +24,7 @@ function App() {
 
   const fetchLocation = async () => {
     const { data } = await axios.post(
-      `https://www.googleapis.com/geolocation/v1/geolocate?key=${googleKey}`
+      `https://www.googleapis.com/geolocation/v1/geolocate?key=${key}`
     );
     localStorage.setItem("lat", data.location.lat);
     localStorage.setItem("lng", data.location.lng);
@@ -33,9 +34,8 @@ function App() {
 
   const postUpdate = async (yelpId, amount) => {
     const { data } = await axios.post(
-      `http://localhost:5000/update?yelpId=${yelpId}&tpAmount=${amount}`
+      `http://toilet-paper-backend.herokuapp.com/update?yelpId=${yelpId}&tpAmount=${amount}`
     );
-    console.log(data);
     const storeToUpdate = stores.find(store => store.yelpId === yelpId);
     storeToUpdate.hasTPInStock = data.hasTPInStock;
     storeToUpdate.updatedAt = data.updatedAt;
@@ -45,7 +45,7 @@ function App() {
   const fetchStores = async () => {
     if (location.lat && location.lng) {
       const { data } = await axios.get(
-        `http://localhost:5000/location?lat=${location.lat}&lng=${location.lng}`
+        `http://toilet-paper-backend.herokuapp.com/location?lat=${location.lat}&lng=${location.lng}`
       );
       let distancedData = data.stores.map(store => {
         return {
@@ -62,17 +62,10 @@ function App() {
     }
   };
 
-  const sortCallback = (a, b) => {
-    if (sortBy) {
-      return Number(a.distance) - Number(b.distance);
-    } else {
-      return b[sortBy] - a[sortBy];
-    }
-  };
-
   const toggleSort = () => {
     setSortBy(!sortBy);
   };
+
   useEffect(() => {
     //on component mount check local storage for recent location data
     const storageLocationAge = localStorage.getItem("updated");

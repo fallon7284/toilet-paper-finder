@@ -51,7 +51,7 @@ export default function ButtonAppBar({
             <Button onClick={toggleSort}>{`Sort ${
               sortBy ? "by inventory" : "by distance"
             }`}</Button>
-            <Button onClick={toggleFilter}>{`${
+            <Button style={{ marginLeft: "2px" }} onClick={toggleFilter}>{`${
               filter ? "Remove" : ""
             } Filter`}</Button>
           </ButtonGroup>

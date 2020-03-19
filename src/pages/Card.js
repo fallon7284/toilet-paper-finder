@@ -62,7 +62,8 @@ export default function StoreCard({
   updatedAt,
   toggleUpdateOpen,
   updateOpen,
-  postUpdate
+  postUpdate,
+  location
 }) {
   const [checkedValue, setCheckedValue] = useState(hasTPInStock);
   useEffect(() => {
@@ -115,7 +116,6 @@ export default function StoreCard({
         <Button
           title="Navigate"
           action={() => {
-            console.log(...directionsData);
             window.open(directionsQuery(...directionsData));
           }}
         />
