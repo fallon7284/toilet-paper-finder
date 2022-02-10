@@ -11,7 +11,7 @@
     "axios": "^0.19.2",
     "javascript-time-ago": "^2.0.7",
     "local-storage": "^2.0.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",
